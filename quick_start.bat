@@ -67,10 +67,19 @@ if %errorLevel% neq 0 (
 )
 
 echo.
-echo [4/5] Building Docker image...
+echo [4/5] Building Docker images...
+echo Building dashboard container...
 docker-compose -f docker-compose-solution1.yml build
 if %errorLevel% neq 0 (
-    echo [ERROR] Failed to build Docker image
+    echo [ERROR] Failed to build dashboard image
+    pause
+    exit /b 1
+)
+
+echo Building WSL monitor container...
+docker-compose -f docker-compose-bash.yml build
+if %errorLevel% neq 0 (
+    echo [ERROR] Failed to build WSL monitor image
     pause
     exit /b 1
 )

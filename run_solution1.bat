@@ -10,7 +10,31 @@ echo  Solution 1: Host Agent + Container Dashboard
 echo ================================================================
 echo.
 
-echo [1/2] Starting dashboard container...
+echo [1/4] Cleaning old metrics...
+if exist "data\metrics\*.json" (
+    del /q "data\metrics\*.json" 2>nul
+    echo Old metrics deleted successfully
+) else (
+    echo No old metrics found
+)
+
+REM Create data directory if it doesn't exist
+if not exist "data\metrics" mkdir "data\metrics"
+
+echo.
+echo [2/4] Generating fresh metrics for this device...
+python monitor_windows.py
+if %errorLevel% neq 0 (
+    echo [ERROR] Failed to generate metrics
+    echo Make sure Python and dependencies are installed:
+    echo    pip install psutil wmi
+    pause
+    exit /b 1
+)
+echo Fresh metrics generated!
+
+echo.
+echo [3/4] Starting dashboard container...
 docker-compose -f docker-compose-solution1.yml up -d
 if %errorLevel% neq 0 (
     echo [ERROR] Failed to start dashboard container
@@ -20,7 +44,17 @@ if %errorLevel% neq 0 (
 )
 
 echo.
-echo [2/2] Starting continuous metrics collection...
+echo [4/5] Starting WSL Docker monitor...
+docker-compose -f docker-compose-bash.yml up -d
+if %errorLevel% neq 0 (
+    echo [WARNING] WSL Docker monitor failed to start
+    echo WSL metrics will not be available
+) else (
+    echo WSL Docker monitor started!
+)
+
+echo.
+echo [5/5] Starting continuous Windows metrics collection...
 echo Running in background (PowerShell window will minimize)
 echo.
 
@@ -29,7 +63,7 @@ start /min powershell -WindowStyle Minimized -Command "& { cd '%~dp0' ; while ($
 
 echo.
 echo ================================================================
-echo  SUCCESS! Solution 1 is running
+echo  SUCCESS! Solution 1 is running with YOUR device metrics
 echo ================================================================
 echo.
 echo  Metrics Collection: Running in background (every 5 seconds)
