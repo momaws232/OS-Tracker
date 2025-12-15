@@ -58,8 +58,8 @@ echo [5/5] Starting continuous Windows metrics collection...
 echo Running in background (PowerShell window will minimize)
 echo.
 
-REM Start metrics collection in a minimized PowerShell window
-start /min powershell -WindowStyle Minimized -Command "& { cd '%~dp0' ; while ($true) { python monitor_windows.py > $null ; Start-Sleep -Seconds 5 } }"
+REM Start metrics collection in a minimized PowerShell window (suppress all output to avoid Unicode errors)
+start /min powershell -WindowStyle Minimized -Command "& { cd '%~dp0' ; while ($true) { python monitor_windows.py 2>&1 | Out-Null ; Start-Sleep -Seconds 5 } }"
 
 echo.
 echo ================================================================

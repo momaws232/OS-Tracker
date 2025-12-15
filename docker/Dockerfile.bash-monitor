@@ -14,6 +14,7 @@ RUN apt-get update && apt-get install -y \
     curl \
     lm-sensors \
     kmod \
+    dos2unix \
     && rm -rf /var/lib/apt/lists/*
 
 # Install nvidia-container-toolkit dependencies (for GPU monitoring)
@@ -28,6 +29,9 @@ WORKDIR /app
 COPY monitor_wsl.sh /app/
 COPY get_cpu_temp.py /app/
 COPY data /app/data
+
+# Fix line endings (convert Windows CRLF to Unix LF)
+RUN dos2unix /app/monitor_wsl.sh && chmod +x /app/monitor_wsl.sh
 COPY config /app/config
 
 # Make script executable
