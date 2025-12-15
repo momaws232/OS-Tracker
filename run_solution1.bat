@@ -55,11 +55,11 @@ if %errorLevel% neq 0 (
 
 echo.
 echo [5/5] Starting continuous Windows metrics collection...
-echo Running in background (PowerShell window will minimize)
+echo Running in background (minimized window)
 echo.
 
-REM Start metrics collection in a minimized PowerShell window (redirect all output to NUL)
-start /min powershell -WindowStyle Hidden -Command "Set-Location '%~dp0' ; while ($true) { python monitor_windows.py *>&1 | Out-Null ; Start-Sleep -Seconds 5 }"
+REM Start metrics collection loop in minimized CMD window
+start /min cmd /c "%~dp0monitor_loop.bat"
 
 echo.
 echo ================================================================
