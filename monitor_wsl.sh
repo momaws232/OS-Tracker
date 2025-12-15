@@ -520,9 +520,15 @@ echo "}"
 
 # Save formatted JSON (with error handling)
 mkdir -p data/metrics 2>/dev/null
+mkdir -p data/metrics/history 2>/dev/null
+
 if [ -f /tmp/monitor_output.json ]; then
-    # Just copy the file directly without formatting to avoid JSON parsing errors
+    # Save to latest file
     cp /tmp/monitor_output.json data/metrics/latest_wsl.json 2>/dev/null
+    
+    # Save to history with timestamp
+    TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+    cp /tmp/monitor_output.json "data/metrics/history/wsl_metrics_${TIMESTAMP}.json" 2>/dev/null
 fi
 
 echo -e "${BOLD}${GREEN}✅ Complete! Metrics saved to data/metrics/latest_wsl.json${NC}"

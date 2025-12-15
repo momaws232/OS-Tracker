@@ -243,15 +243,26 @@ def print_metrics(metrics):
     print("\n" + "=" * 60)
 
 def save_metrics(metrics, filename='data/metrics/latest_windows.json'):
-    """Save metrics to JSON file"""
+    """Save metrics to JSON file and history"""
     import os
+    from datetime import datetime
+    
     os.makedirs(os.path.dirname(filename), exist_ok=True)
     
+    # Save latest metrics
     with open(filename, 'w') as f:
         json.dump(metrics, f, indent=2)
     
     # Also save to latest.json for backward compatibility
     with open('data/metrics/latest.json', 'w') as f:
+        json.dump(metrics, f, indent=2)
+    
+    # Save to history with timestamp
+    history_dir = 'data/metrics/history'
+    os.makedirs(history_dir, exist_ok=True)
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    history_file = os.path.join(history_dir, f'windows_metrics_{timestamp}.json')
+    with open(history_file, 'w') as f:
         json.dump(metrics, f, indent=2)
     
     print(f"\n✅ Metrics saved to: {filename}")

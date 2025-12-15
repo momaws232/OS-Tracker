@@ -8,7 +8,7 @@ import json
 import glob
 from datetime import datetime, timedelta
 from pathlib import Path
-from flask import Flask, render_template, jsonify, send_file
+from flask import Flask, render_template, jsonify, send_file, request
 import plotly.graph_objs as go
 import plotly.utils
 import pandas as pd
@@ -149,24 +149,41 @@ def _load_and_convert_metrics(latest_file):
         return data
     return None
 
-def load_historical_metrics(hours=24):
-    """Load metrics from the last N hours"""
+def load_historical_metrics(hours=24, source='windows'):
+    """Load metrics from the last N hours for specified source"""
     cutoff_time = datetime.now() - timedelta(hours=hours)
-    metrics_files = glob.glob(os.path.join(DATA_DIR, 'metrics_*.json'))
+    
+    # Look in history directory
+    history_dir = os.path.join(DATA_DIR, 'history')
+    if not os.path.exists(history_dir):
+        return []
+    
+    # Pattern based on source
+    if source == 'windows':
+        pattern = 'windows_metrics_*.json'
+    elif source == 'wsl':
+        pattern = 'wsl_metrics_*.json'
+    else:
+        pattern = '*_metrics_*.json'
+    
+    metrics_files = glob.glob(os.path.join(history_dir, pattern))
     
     historical_data = []
     for file_path in sorted(metrics_files):
         # Extract timestamp from filename
         filename = os.path.basename(file_path)
         try:
-            timestamp_str = filename.replace('metrics_', '').replace('.json', '')
-            file_time = datetime.strptime(timestamp_str, '%Y%m%d_%H%M%S')
-            
-            if file_time >= cutoff_time:
-                with open(file_path, 'r') as f:
-                    data = json.load(f)
-                    historical_data.append(data)
-        except:
+            # Extract timestamp: windows_metrics_20251216_011410.json
+            parts = filename.split('_')
+            if len(parts) >= 4:
+                timestamp_str = parts[2] + '_' + parts[3].replace('.json', '')
+                file_time = datetime.strptime(timestamp_str, '%Y%m%d_%H%M%S')
+                
+                if file_time >= cutoff_time:
+                    data = _load_and_convert_metrics(file_path)
+                    if data:
+                        historical_data.append(data)
+        except Exception as e:
             continue
     
     return historical_data
@@ -340,14 +357,16 @@ def api_latest():
 @app.route('/api/historical/<int:hours>')
 def api_historical(hours):
     """API endpoint for historical metrics"""
-    data = load_historical_metrics(hours)
+    source = request.args.get('source', 'windows')
+    data = load_historical_metrics(hours, source)
     return jsonify(data)
 
 @app.route('/api/charts')
 def api_charts():
     """API endpoint for chart data"""
-    latest = load_latest_metrics()
-    historical = load_historical_metrics(24)
+    source = request.args.get('source', 'windows')
+    latest = load_windows_metrics() if source == 'windows' else load_wsl_metrics()
+    historical = load_historical_metrics(24, source)
     
     if not latest or not historical:
         return jsonify({'error': 'Insufficient data'}), 404
@@ -364,8 +383,9 @@ def api_charts():
 @app.route('/report/html')
 def report_html():
     """Generate and serve HTML report"""
-    latest = load_latest_metrics()
-    historical = load_historical_metrics(24)
+    source = request.args.get('source', 'windows')
+    latest = load_windows_metrics() if source == 'windows' else load_wsl_metrics()
+    historical = load_historical_metrics(24, source)
     
     if not latest:
         return 'No data available', 404
@@ -375,29 +395,30 @@ def report_html():
 @app.route('/report/markdown')
 def report_markdown():
     """Generate and serve Markdown report"""
-    latest = load_latest_metrics()
+    source = request.args.get('source', 'windows')
+    latest = load_windows_metrics() if source == 'windows' else load_wsl_metrics()
     
     if not latest:
         return 'No data available', 404
     
     # Generate markdown
-    md_content = generate_markdown_report(latest)
+    md_content = generate_markdown_report(latest, source)
     
     # Save to file
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    report_file = os.path.join(REPORTS_DIR, f'report_{timestamp}.md')
-    with open(report_file, 'w') as f:
+    report_file = os.path.join(REPORTS_DIR, f'report_{source}_{timestamp}.md')
+    with open(report_file, 'w', encoding='utf-8') as f:
         f.write(md_content)
     
-    return send_file(report_file, as_attachment=True, download_name='system_report.md')
+    return send_file(report_file, as_attachment=True, download_name=f'system_report_{source}.md')
 
 # =================================================================
 # Report Generation
 # =================================================================
 
-def generate_markdown_report(metrics):
+def generate_markdown_report(metrics, source='windows'):
     """Generate markdown report from metrics"""
-    report = f"""# System Monitoring Report
+    report = f"""# System Monitoring Report ({source.upper()})
 
 **Generated:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}  
 **Hostname:** {metrics['system_info']['hostname']}  
@@ -405,22 +426,22 @@ def generate_markdown_report(metrics):
 
 ## System Overview
 
-- **Uptime:** {format_uptime(metrics['system_info']['uptime_seconds'])}
+- **Architecture:** {metrics['system_info']['architecture']}
 - **CPU Cores:** {metrics['cpu']['core_count']}
-- **CPU Model:** {metrics['cpu']['model']}
+- **CPU Frequency:** {metrics['cpu']['frequency_ghz']:.2f} GHz
 
 ## Current Metrics
 
 ### CPU
-- **Usage:** {metrics['cpu']['usage_percent']}%
+- **Usage:** {metrics['cpu']['usage_percent']:.1f}%
 - **Temperature:** {metrics['cpu']['temperature_celsius']}°C
-- **Frequency:** {metrics['cpu']['frequency_ghz']} GHz
+- **Frequency:** {metrics['cpu']['frequency_ghz']:.2f} GHz
 
 ### Memory
 - **Total:** {format_bytes(metrics['memory']['total_bytes'])}
-- **Used:** {format_bytes(metrics['memory']['used_bytes'])} ({metrics['memory']['usage_percent']}%)
+- **Used:** {format_bytes(metrics['memory']['used_bytes'])} ({metrics['memory']['usage_percent']:.1f}%)
 - **Available:** {format_bytes(metrics['memory']['available_bytes'])}
-- **Swap Used:** {format_bytes(metrics['memory']['swap_used_bytes'])} ({metrics['memory']['swap_usage_percent']}%)
+- **Swap Used:** {format_bytes(metrics['memory']['swap_used_bytes'])} ({metrics['memory']['swap_usage_percent']:.1f}%)
 
 ### Disk
 """
@@ -436,8 +457,6 @@ def generate_markdown_report(metrics):
     
     report += f"""
 ### Network
-- **Active Connections:** {metrics['network']['active_connections']}
-
 """
     
     for iface in metrics['network']['interfaces']:
@@ -449,9 +468,9 @@ def generate_markdown_report(metrics):
     
     report += f"""
 ### System Load
-- **1 min:** {metrics['system_load']['load_average']['1min']}
-- **5 min:** {metrics['system_load']['load_average']['5min']}
-- **15 min:** {metrics['system_load']['load_average']['15min']}
+- **1 min:** {metrics['system_load']['load_average']['1min']:.2f}
+- **5 min:** {metrics['system_load']['load_average']['5min']:.2f}
+- **15 min:** {metrics['system_load']['load_average']['15min']:.2f}
 - **Total Processes:** {metrics['system_load']['total_processes']}
 - **Running:** {metrics['system_load']['running_processes']}
 - **Sleeping:** {metrics['system_load']['sleeping_processes']}
@@ -459,8 +478,14 @@ def generate_markdown_report(metrics):
 ### GPU
 - **Vendor:** {metrics['gpu']['gpu']['vendor']}
 - **Name:** {metrics['gpu']['gpu']['name']}
-- **Utilization:** {metrics['gpu']['gpu']['utilization_percent']}%
+- **Utilization:** {metrics['gpu']['gpu']['utilization_percent']:.1f}%
 - **Temperature:** {metrics['gpu']['gpu']['temperature_celsius']}°C
+- **Memory:** {format_bytes(metrics['gpu']['gpu']['memory_used_bytes'])} / {format_bytes(metrics['gpu']['gpu']['memory_total_bytes'])}
+
+---
+
+*Report generated by System Monitor Dashboard*  
+*Timestamp: {metrics['system_info']['collection_time']}*
 """
     
     return report

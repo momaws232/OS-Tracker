@@ -2,6 +2,7 @@
 
 # Data directories
 data/metrics/*.json
+data/metrics/history/
 data/reports/*
 data/logs/*.log
 data/alerts/*.log
@@ -11,6 +12,12 @@ data/alerts/*.log
 !data/reports/.gitkeep
 !data/logs/.gitkeep
 !data/alerts/.gitkeep
+
+# LibreHardwareMonitor system driver
+LibreHardwareMonitor/LibreHardwareMonitor.sys
+
+# Nested git repos
+system-monitor/
 
 # Environment files
 .env
