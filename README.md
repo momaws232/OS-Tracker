@@ -1,177 +1,104 @@
-# 🖥️ OS-Tracker - System Monitor
+# 🚀 System Monitor - Quick Start
 
-A cross-platform system monitoring solution with Docker Hub distribution. Monitor CPU, GPU, memory, disk, and network metrics with a beautiful web dashboard.
+**One-Click Installation for Windows**
 
-## 🚀 For End Users (Quick Start)
+## 📥 Installation (3 Simple Steps)
 
-**Want to just run the monitor? Use the release branch:**
+### Step 1: Download the Installer
+Click the `quick_start.bat` file above and download it to your computer.
 
-```bash
-git clone -b release https://github.com/momaws232/OS-Tracker.git
-cd OS-Tracker
-quick_start.bat
-```
+### Step 2: Run the Installer
+Double-click `quick_start.bat` - it will automatically:
+- ✅ Download the complete project
+- ✅ Install all dependencies
+- ✅ Build the Docker container
+- ✅ Start the monitoring system
+- ✅ Open your browser to the dashboard
 
-Open your browser to `http://localhost:8080` and you're done! 🎉
-
----
-
-## 👨‍💻 For Developers
-
-This is the **main branch** with full source code and development tools.
-
-### Features
-
-- **Cross-Platform Support**: Windows, Linux, and macOS
-- **Comprehensive Monitoring**:
-  - CPU performance and temperature
-  - GPU utilization (NVIDIA, AMD, Intel)
-  - Disk usage and SMART status
-  - Memory consumption (RAM & Swap)
-  - Network interface statistics
-  - System load metrics
-- **Docker Hub Distribution**: Pre-built images for easy deployment
-- **Modern Web Dashboard**: Real-time charts with Plotly
-- **Alert System**: Configurable thresholds with notifications
-- **REST API**: Access metrics programmatically
-
-### Architecture
-
-```
-┌─────────────────────────────────────────────────────────┐
-│                   Docker Hub                             │
-│  ┌──────────────────────┐  ┌──────────────────────┐    │
-│  │ dashboard:latest     │  │ bash-monitor:latest  │    │
-│  └──────────────────────┘  └──────────────────────┘    │
-└─────────────────────────────────────────────────────────┘
-                          │
-                          │ docker pull
-                          ▼
-┌─────────────────────────────────────────────────────────┐
-│                   Local Machine                          │
-│  ┌──────────────────────┐  ┌──────────────────────┐    │
-│  │ Dashboard Container  │  │ Windows Monitor      │    │
-│  │ (from Docker Hub)    │  │ (Python Script)      │    │
-│  └──────────────────────┘  └──────────────────────┘    │
-│           │                          │                   │
-│           └──────────┬───────────────┘                   │
-│                      ▼                                   │
-│              ┌──────────────┐                            │
-│              │ Metrics Data │                            │
-│              └──────────────┘                            │
-└─────────────────────────────────────────────────────────┘
-```
-
-### Development Setup
-
-#### Prerequisites
-
-- **Docker Desktop**: For running containers
-- **Python 3.7+**: For Windows metrics collection
-- **Git**: For version control
-- **Docker Hub Account**: For pushing images (free at https://hub.docker.com)
-
-#### Clone the Repository
-
-```bash
-git clone https://github.com/momaws232/OS-Tracker.git
-cd OS-Tracker
-```
-
-#### Build and Push Images to Docker Hub
-
-```bash
-# Run the push script
-push_to_dockerhub.bat
-
-# Enter your Docker Hub username and password
-# Images will be built and pushed to Docker Hub
-```
-
-#### Test Locally
-
-```bash
-# Run the quick start
-quick_start.bat
-
-# Access dashboard at http://localhost:8080
-```
-
-### Project Structure
-
-```
-OS-Tracker/
-├── push_to_dockerhub.bat          # Build and push images to Docker Hub
-├── quick_start.bat                # Pull images and run (for testing)
-├── DOCKERHUB_SETUP.md             # Docker Hub setup guide
-├── QUICK_REFERENCE.md             # Quick reference guide
-│
-└── system-monitor/
-    ├── docker/
-    │   ├── Dockerfile.dashboard       # Dashboard container
-    │   └── Dockerfile.bash-monitor    # Bash monitor container
-    ├── reporting/
-    │   ├── reporter.py                # Flask web application
-    │   └── templates/
-    │       └── dashboard.html         # Web dashboard UI
-    ├── scripts/                       # Monitoring scripts
-    ├── config/                        # Configuration files
-    ├── docker-compose-solution1.yml   # Dashboard compose file
-    ├── docker-compose-bash.yml        # Bash monitor compose file
-    ├── monitor_windows.py             # Windows metrics collector
-    ├── monitor_loop.bat               # Continuous monitoring
-    └── run_solution1.bat              # Start all services
-```
-
-### Making Changes
-
-1. **Modify Code**: Make your changes to the source files
-2. **Test Locally**: Run `quick_start.bat` to test
-3. **Build Images**: Run `push_to_dockerhub.bat` to build and push new images
-4. **Commit**: `git add .` and `git commit -m "Your message"`
-5. **Push**: `git push origin main`
-
-### Docker Hub Images
-
-This project uses pre-built Docker images hosted on Docker Hub:
-
-- `loptyloop/system-monitor-dashboard:latest` - Web dashboard
-- `loptyloop/system-monitor-bash:latest` - Bash monitor
-
-See [DOCKERHUB_SETUP.md](DOCKERHUB_SETUP.md) for detailed Docker Hub setup instructions.
-
-### Documentation
-
-- [DOCKERHUB_SETUP.md](DOCKERHUB_SETUP.md) - Complete Docker Hub setup guide
-- [QUICK_REFERENCE.md](QUICK_REFERENCE.md) - Quick reference for common tasks
-- [system-monitor/README.md](system-monitor/README.md) - Detailed system monitor documentation
-
-### API Endpoints
-
-- `GET /api/latest` - Latest metrics
-- `GET /api/historical/<hours>` - Historical data
-- `GET /api/charts` - Chart data
-- `GET /report/html` - HTML report
-- `GET /report/markdown` - Markdown report
-
-### Troubleshooting
-
-See [DOCKERHUB_SETUP.md#troubleshooting](DOCKERHUB_SETUP.md#troubleshooting) for common issues and solutions.
+### Step 3: Done! 🎉
+Your system monitor is now running at **http://localhost:8080**
 
 ---
 
-## 📝 License
+## 📋 Prerequisites
 
-This project is created for educational purposes as part of the Arab Academy for Science, Technology & Maritime Transport coursework.
+Before running `quick_start.bat`, make sure you have:
 
-## 🙏 Acknowledgments
-
-- Arab Academy for Science, Technology & Maritime Transport
-- College of Computing and Information Technology
-- Eng. Youssef Ahmed Mehanna & Eng. Ahmed Gamal
+1. **Git** - [Download here](https://git-scm.com/downloads)
+2. **Python 3.x** - [Download here](https://www.python.org/downloads/) *(Check "Add to PATH")*
+3. **Docker Desktop** - [Download here](https://www.docker.com/products/docker-desktop) *(Must be running)*
 
 ---
 
-**Generated:** 2025  
-**Course:** Project 12th  
-**Institution:** Arab Academy for Science, Technology & Maritime Transport
+## ❓ What Does This Monitor?
+
+- 📊 **CPU Usage & Temperature** - Real-time processor monitoring
+- 💾 **Memory Usage** - RAM consumption tracking
+- 🎮 **GPU Stats** - Graphics card monitoring (NVIDIA/AMD/Intel)
+- 💿 **Disk Usage** - Storage space tracking
+- 🌐 **Network Activity** - Upload/download speeds
+- ⚡ **Top Processes** - See what's using your resources
+
+---
+
+## 🛑 How to Stop
+
+```cmd
+cd system-monitor
+docker-compose -f docker-compose-solution1.yml down
+```
+Then close the minimized PowerShell window.
+
+---
+
+## 📚 For Developers
+
+Want to contribute or customize? Switch to the **[main branch](https://github.com/Asserali/os-rep/tree/main)** for:
+- Complete source code
+- Development documentation
+- Multi-platform support (Linux, macOS)
+- Advanced configuration options
+
+---
+
+## 🐛 Troubleshooting
+
+### "Git is not installed"
+Download and install Git from: https://git-scm.com/downloads
+
+### "Python is not installed"
+Download and install Python from: https://www.python.org/downloads/  
+⚠️ **Important:** Check "Add Python to PATH" during installation
+
+### "Docker is not running"
+1. Install Docker Desktop: https://www.docker.com/products/docker-desktop
+2. Start Docker Desktop
+3. Wait for the whale icon to appear in your system tray
+4. Run `quick_start.bat` again
+
+### "Port 8080 already in use"
+Another application is using port 8080. Stop it or modify the port in `docker-compose-solution1.yml`
+
+---
+
+## 📖 Documentation
+
+For detailed guides, see the **[main branch](https://github.com/Asserali/os-rep)**:
+- Installation Guide
+- User Manual
+- Deployment Options
+- Platform-specific Instructions
+
+---
+
+## 📄 License
+
+This project is open source and available for personal and educational use.
+
+---
+
+## 🌟 Support
+
+Found this useful? Star the repository! ⭐
+
+**Enjoy monitoring your system!** 🚀
