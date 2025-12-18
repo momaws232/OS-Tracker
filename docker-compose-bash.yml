@@ -2,9 +2,7 @@ version: '3.8'
 
 services:
   bash-monitor:
-    build:
-      context: .
-      dockerfile: docker/Dockerfile.bash-monitor
+    image: loptyloop/system-monitor-bash:latest
     container_name: system-monitor-bash
     hostname: monitor-bash
     privileged: true
@@ -25,4 +23,4 @@ services:
           devices:
             - driver: nvidia
               count: all
-              capabilities: [gpu]
+              capabilities: [ gpu ]

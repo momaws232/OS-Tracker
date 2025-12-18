@@ -1,190 +1,150 @@
-# 🖥️ System Monitor - Comprehensive Monitoring Solution
+# 🖥️ OS-Tracker - System Monitor
 
-A cross-platform system monitoring solution that collects, analyzes, and reports hardware and software performance metrics. Built with Bash scripting, Docker containerization, and interactive dashboards.
+A cross-platform system monitoring solution with Docker Hub distribution. Monitor CPU, GPU, memory, disk, and network metrics with a beautiful web dashboard.
 
-## 📋 Features
+## 🚀 For End Users (Quick Start)
 
-- **Cross-Platform Support**: Runs natively on Windows, Linux, and macOS
+**Want to just run the monitor? Use the release branch:**
+
+```bash
+git clone -b release https://github.com/momaws232/OS-Tracker.git
+cd OS-Tracker
+quick_start.bat
+```
+
+Open your browser to `http://localhost:8080` and you're done! 🎉
+
+---
+
+## 👨‍💻 For Developers
+
+This is the **main branch** with full source code and development tools.
+
+### Features
+
+- **Cross-Platform Support**: Windows, Linux, and macOS
 - **Comprehensive Monitoring**:
   - CPU performance and temperature
-  - GPU utilization and health (NVIDIA, AMD, Intel)
+  - GPU utilization (NVIDIA, AMD, Intel)
   - Disk usage and SMART status
   - Memory consumption (RAM & Swap)
   - Network interface statistics
   - System load metrics
-- **Alert System**: Configurable thresholds with desktop notifications
-- **Multiple Interfaces**:
-  - Modern web dashboard with real-time charts
-  - Terminal-based CLI dashboard
-  - REST API endpoints
-- **Docker Containerization**: Easy deployment with Docker Compose
-- **Automated Reporting**: Generate HTML and Markdown reports
-- **Historical Data Tracking**: Time-series visualization with Plotly
+- **Docker Hub Distribution**: Pre-built images for easy deployment
+- **Modern Web Dashboard**: Real-time charts with Plotly
+- **Alert System**: Configurable thresholds with notifications
+- **REST API**: Access metrics programmatically
 
-## 🏗️ Architecture
+### Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                   System Monitor                         │
-├─────────────────────────────────────────────────────────┤
-│                                                           │
-│  ┌──────────────┐    ┌──────────────┐   ┌──────────────┐│
-│  │  Collector   │───▶│   Storage    │◀──│   Reporter   ││
-│  │  Container   │    │   (JSON)     │   │  Container   ││
-│  └──────────────┘    └──────────────┘   └──────────────┘│
-│         │                                      │         │
-│         ▼                                      ▼         │
-│  ┌──────────────┐                    ┌──────────────┐  │
-│  │   Monitors   │                    │     Web      │  │
-│  │  (Bash)      │                    │   Dashboard  │  │
-│  └──────────────┘                    └──────────────┘  │
-│         │                                      │         │
-│         ▼                                      │         │
-│  ┌──────────────┐                             │         │
-│  │    Alerts    │                             │         │
-│  └──────────────┘                             │         │
-│                                                │         │
-│  Optional: InfluxDB for time-series storage◀──┘         │
+│                   Docker Hub                             │
+│  ┌──────────────────────┐  ┌──────────────────────┐    │
+│  │ dashboard:latest     │  │ bash-monitor:latest  │    │
+│  └──────────────────────┘  └──────────────────────┘    │
+└─────────────────────────────────────────────────────────┘
+                          │
+                          │ docker pull
+                          ▼
+┌─────────────────────────────────────────────────────────┐
+│                   Local Machine                          │
+│  ┌──────────────────────┐  ┌──────────────────────┐    │
+│  │ Dashboard Container  │  │ Windows Monitor      │    │
+│  │ (from Docker Hub)    │  │ (Python Script)      │    │
+│  └──────────────────────┘  └──────────────────────┘    │
+│           │                          │                   │
+│           └──────────┬───────────────┘                   │
+│                      ▼                                   │
+│              ┌──────────────┐                            │
+│              │ Metrics Data │                            │
+│              └──────────────┘                            │
 └─────────────────────────────────────────────────────────┘
 ```
 
-## 🚀 Quick Start
+### Development Setup
 
-### Prerequisites
+#### Prerequisites
 
-- **Linux/macOS**: Bash, Python 3.7+, Docker (optional)
-- **Windows**: Git Bash or WSL, Python 3.7+, Docker (optional)
+- **Docker Desktop**: For running containers
+- **Python 3.7+**: For Windows metrics collection
+- **Git**: For version control
+- **Docker Hub Account**: For pushing images (free at https://hub.docker.com)
 
-### Installation
+#### Clone the Repository
 
-1. **Clone or download the project**:
 ```bash
-git clone <repository-url>
-cd system-monitor
+git clone https://github.com/momaws232/OS-Tracker.git
+cd OS-Tracker
 ```
 
-2. **Run the installation script**:
+#### Build and Push Images to Docker Hub
+
 ```bash
-chmod +x install.sh
-./install.sh
+# Run the push script
+push_to_dockerhub.bat
+
+# Enter your Docker Hub username and password
+# Images will be built and pushed to Docker Hub
 ```
 
-3. **Test the monitoring system**:
+#### Test Locally
+
 ```bash
-bash scripts/monitor.sh --test
+# Run the quick start
+quick_start.bat
+
+# Access dashboard at http://localhost:8080
 ```
 
-### Using Docker (Recommended)
-
-1. **Start the services**:
-```bash
-docker-compose up -d
-```
-
-2. **Access the web dashboard**:
-```
-http://localhost:8080
-```
-
-3. **View logs**:
-```bash
-docker-compose logs -f
-```
-
-4. **Stop services**:
-```bash
-docker-compose down
-```
-
-### Native Installation
-
-1. **Run manually**:
-```bash
-bash scripts/monitor.sh
-```
-
-2. **View CLI dashboard**:
-```bash
-bash scripts/dashboard_cli.sh
-```
-
-3. **Start the web server**:
-```bash
-cd reporting
-python3 reporter.py
-```
-
-## 📚 Documentation
-
-- [Installation Guide](docs/INSTALL.md) - Detailed installation instructions
-- [User Guide](docs/USER_GUIDE.md) - How to use the system
-- [Presentation](docs/PRESENTATION.md) - Project overview and demo
-
-## 📁 Project Structure
+### Project Structure
 
 ```
-system-monitor/
-├── scripts/
-│   ├── monitor.sh              # Main monitoring script
-│   ├── dashboard_cli.sh        # CLI dashboard
-│   ├── alert_manager.sh        # Alert system
-│   ├── utils.sh                # Utility functions
-│   └── collectors/             # Individual metric collectors
-│       ├── cpu_monitor.sh
-│       ├── memory_monitor.sh
-│       ├── disk_monitor.sh
-│       ├── network_monitor.sh
-│       ├── gpu_monitor.sh
-│       └── system_load.sh
-├── reporting/
-│   ├── reporter.py             # Flask web application
-│   └── templates/
-│       └── dashboard.html      # Web dashboard
-├── docker/
-│   ├── Dockerfile.collector    # Collector container
-│   └── Dockerfile.reporter     # Reporter container
-├── config/
-│   ├── monitor.conf            # Main configuration
-│   └── alert_thresholds.conf   # Alert thresholds
-├── data/
-│   ├── metrics/                # Collected metrics (JSON)
-│   ├── reports/                # Generated reports
-│   ├── logs/                   # System logs
-│   └── alerts/                 # Alert history
-├── docs/                       # Documentation
-├── docker-compose.yml          # Docker orchestration
-├── install.sh                  # Installation script
-└── README.md                   # This file
+OS-Tracker/
+├── push_to_dockerhub.bat          # Build and push images to Docker Hub
+├── quick_start.bat                # Pull images and run (for testing)
+├── DOCKERHUB_SETUP.md             # Docker Hub setup guide
+├── QUICK_REFERENCE.md             # Quick reference guide
+│
+└── system-monitor/
+    ├── docker/
+    │   ├── Dockerfile.dashboard       # Dashboard container
+    │   └── Dockerfile.bash-monitor    # Bash monitor container
+    ├── reporting/
+    │   ├── reporter.py                # Flask web application
+    │   └── templates/
+    │       └── dashboard.html         # Web dashboard UI
+    ├── scripts/                       # Monitoring scripts
+    ├── config/                        # Configuration files
+    ├── docker-compose-solution1.yml   # Dashboard compose file
+    ├── docker-compose-bash.yml        # Bash monitor compose file
+    ├── monitor_windows.py             # Windows metrics collector
+    ├── monitor_loop.bat               # Continuous monitoring
+    └── run_solution1.bat              # Start all services
 ```
 
-## ⚙️ Configuration
+### Making Changes
 
-### Monitoring Intervals
+1. **Modify Code**: Make your changes to the source files
+2. **Test Locally**: Run `quick_start.bat` to test
+3. **Build Images**: Run `push_to_dockerhub.bat` to build and push new images
+4. **Commit**: `git add .` and `git commit -m "Your message"`
+5. **Push**: `git push origin main`
 
-Edit `config/monitor.conf`:
-```bash
-MONITOR_INTERVAL=60  # Collect metrics every 60 seconds
-RETENTION_DAYS=7     # Keep data for 7 days
-```
+### Docker Hub Images
 
-### Alert Thresholds
+This project uses pre-built Docker images hosted on Docker Hub:
 
-Edit `config/alert_thresholds.conf`:
-```bash
-CPU_USAGE_WARNING=70
-CPU_USAGE_CRITICAL=90
-MEMORY_USAGE_WARNING=80
-MEMORY_USAGE_CRITICAL=95
-```
+- `loptyloop/system-monitor-dashboard:latest` - Web dashboard
+- `loptyloop/system-monitor-bash:latest` - Bash monitor
 
-## 🎯 Use Cases
+See [DOCKERHUB_SETUP.md](DOCKERHUB_SETUP.md) for detailed Docker Hub setup instructions.
 
-- **System Administrators**: Monitor server health and performance
-- **DevOps Teams**: Track infrastructure metrics
-- **Students**: Learn system monitoring and Docker
-- **Developers**: Monitor development machine resources
+### Documentation
 
-## 🔧 Advanced Features
+- [DOCKERHUB_SETUP.md](DOCKERHUB_SETUP.md) - Complete Docker Hub setup guide
+- [QUICK_REFERENCE.md](QUICK_REFERENCE.md) - Quick reference for common tasks
+- [system-monitor/README.md](system-monitor/README.md) - Detailed system monitor documentation
 
 ### API Endpoints
 
@@ -194,65 +154,11 @@ MEMORY_USAGE_CRITICAL=95
 - `GET /report/html` - HTML report
 - `GET /report/markdown` - Markdown report
 
-### With InfluxDB
+### Troubleshooting
 
-```bash
-docker-compose --profile with-influxdb up -d
-```
+See [DOCKERHUB_SETUP.md#troubleshooting](DOCKERHUB_SETUP.md#troubleshooting) for common issues and solutions.
 
-Access InfluxDB UI at `http://localhost:8086`
-
-## 👥 Team Contributions
-
-- **Member 1**: System metrics collection scripts (CPU, Memory, Disk, Network, GPU, System Load)
-- **Member 2**: Docker infrastructure (Dockerfiles, Docker Compose, containerization)
-- **Member 3**: Dashboard development (Web UI, CLI dashboard, reporting system)
-
-## 📊 Grading Rubric Alignment
-
-| Component | Coverage | Points |
-|-----------|----------|--------|
-| Bash Monitoring Script | ✅ All collectors + orchestration | 20% |
-| Docker Containerization | ✅ Multi-container setup | 20% |
-| Reporting System | ✅ Web + CLI + Reports | 20% |
-| Error Handling | ✅ Comprehensive logging | 10% |
-| Code Quality | ✅ Modular, documented | 10% |
-| Documentation | ✅ Complete guides | 10% |
-| Project Presentation | ✅ Ready to demo | 10% |
-
-## 🐛 Troubleshooting
-
-### Missing Dependencies
-
-```bash
-# Linux (Debian/Ubuntu)
-sudo apt-get install lm-sensors smartmontools dialog
-
-# macOS
-brew install smartmontools dialog
-
-# Windows
-# Install via Git Bash or WSL package manager
-```
-
-### Permission Issues
-
-Some features require elevated permissions:
-```bash
-# SMART status requires sudo
-sudo smartctl -H /dev/sda
-```
-
-### Docker Issues
-
-```bash
-# Rebuild containers
-docker-compose up --build
-
-# View logs
-docker-compose logs -f collector
-docker-compose logs -f reporter
-```
+---
 
 ## 📝 License
 

@@ -1,0 +1,97 @@
+{
+  "timestamp": "2025-12-18T08:14:36.777994",
+  "system": {
+    "hostname": "WOOBY",
+    "platform": "Windows",
+    "version": "10.0.26100",
+    "architecture": "AMD64"
+  },
+  "cpu": {
+    "usage_percent": 19.8,
+    "count": 12,
+    "frequency_mhz": 3593.0,
+    "temperature": null
+  },
+  "memory": {
+    "total_gb": 15.95,
+    "used_gb": 13.96,
+    "available_gb": 1.99,
+    "percent": 87.5
+  },
+  "swap": {
+    "total_gb": 16.0,
+    "used_gb": 1.05,
+    "percent": 6.6
+  },
+  "disk": [
+    {
+      "device": "C:\\",
+      "mountpoint": "C:\\",
+      "total_gb": 465.04,
+      "used_gb": 439.64,
+      "free_gb": 25.39,
+      "percent": 94.5
+    },
+    {
+      "device": "D:\\",
+      "mountpoint": "D:\\",
+      "total_gb": 923.55,
+      "used_gb": 578.26,
+      "free_gb": 345.29,
+      "percent": 62.6
+    }
+  ],
+  "network": {
+    "bytes_sent_mb": 477.93,
+    "bytes_recv_mb": 7012.05,
+    "packets_sent": 3123009,
+    "packets_recv": 4636261
+  },
+  "gpu": {
+    "available": true,
+    "name": "NVIDIA GeForce RTX 2060 SUPER",
+    "temperature": 50.0,
+    "utilization": 3.0,
+    "memory_used_mb": 1179.0,
+    "memory_total_mb": 8192.0
+  },
+  "system_load": {
+    "load_average": {
+      "1min": 2.38,
+      "5min": 2.38,
+      "15min": 2.38
+    },
+    "total_processes": 311,
+    "running_processes": 307,
+    "sleeping_processes": 0,
+    "zombie_processes": 0,
+    "top_cpu_processes": [
+      {
+        "name": "System Idle Process",
+        "cpu_percent": 0,
+        "memory_percent": 4.782757584975254e-05
+      },
+      {
+        "name": "System",
+        "cpu_percent": 0,
+        "memory_percent": 0.0183418753383801
+      },
+      {
+        "name": "",
+        "cpu_percent": 0,
+        "memory_percent": 0.32898198048252286
+      },
+      {
+        "name": "Registry",
+        "cpu_percent": 0,
+        "memory_percent": 0.2969614184511135
+      },
+      {
+        "name": "steamservice.exe",
+        "cpu_percent": 0,
+        "memory_percent": 0.008202429258232561
+      }
+    ],
+    "timestamp": "2025-12-18T08:14:36.807505"
+  }
+}
